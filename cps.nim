@@ -125,14 +125,44 @@ proc isCpsBlock(n: NimNode): bool =
   ## `true` if the block `n` contains a cps call anywhere at all;
   ## this is used to figure out if a block needs tailcall handling...
   case n.kind
-  of nnkForStmt, nnkBlockStmt, nnkWhileStmt, nnkElse, nnkElifBranch, nnkOfBranch:
+  of nnkForStmt, nnkBlockStmt, nnkWhileStmt, nnkElse, nnkElifBranch, nnkOfBranch,
+     nnkElifExpr, nnkElseExpr:
     result = n.last.isCpsBlock
-  of nnkStmtList, nnkIfStmt, nnkCaseStmt:
+  of nnkStmtList, nnkIfStmt, nnkIfExpr, nnkCaseStmt, nnkTryStmt:
     for n in n.items:
       if n.isCpsBlock:
         return true
   of callish:
     result = n.isCpsCall
+  else:
+    result = false
+
+proc isCpsExpr(n: NimNode): bool =
+  ## returns whether `n` is an expression with cps calls in it
+  if n.typeKind != ntyNone:
+    case n.kind
+    of nnkStmtList, nnkStmtListExpr:
+      n.last.isCpsExpr
+    of nnkIfExpr, nnkIfStmt, nnkCaseStmt, nnkTryStmt, nnkBlockStmt:
+      n.isCpsBlock
+    else:
+      false
+  else:
+    false
+
+proc hasCpsExpr(n: NimNode): bool =
+  ## returns whether `n` has an expression with cps calls in it
+  case n.kind
+  of nnkStmtList, nnkStmtListExpr:
+    result = n.isCpsExpr
+  of nnkVarSection, nnkLetSection:
+    for defs in n.items:
+      if defs.last.isCpsExpr:
+        return true
+  of nnkAsgn, CallNodes:
+    for child in n.items:
+      if child.isCpsExpr:
+        return true
   else:
     result = false
 
