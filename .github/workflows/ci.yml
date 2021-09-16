@@ -6,26 +6,54 @@ on:
   push:
     branches:
       - master
-    paths:
-      - '**.cfg'
-      - '**.nims'
-      - '**.nim'
-      - '**.nimble'
-      - 'tests/**'
-      - '.github/workflows/ci.yml'
+
   pull_request:
     branches:
       - '*'
-    paths:
-      - '**.cfg'
-      - '**.nims'
-      - '**.nim'
-      - '**.nimble'
-      - 'tests/**'
-      - '.github/workflows/ci.yml'
 
 jobs:
+  skippy:
+    name: 'Determine if CI should be run'
+    continue-on-error: true # Shouldn't stop the CI if the checker is buggy
+    runs-on: ubuntu-latest
+    outputs:
+      # Map checkSkip output to job
+      should_skip: ${{ steps.checkSkip.outputs.should_skip }}
+    steps:
+      - id: checkSkip
+        name: Skipping check
+        uses: fkirc/skip-duplicate-actions@v3.4.1
+        with:
+          # TODO: We might want to enable this, but keeping this off now to
+          # not change the current semantics
+          skip_after_successful_duplicate: 'false'
+          # Paths to ignore, uses micromatch:
+          # https://github.com/micromatch/micromatch
+          #
+          # This is a JSON array, provided as text, so no comments, sadly.
+          #
+          # FIXME: disabled ".github/workflows/ci.yml" to test the new logic.
+          paths_ignore: |
+            [
+              "**.cfg",
+              "**.nims",
+              "**.nim",
+              "**.nimble",
+              "tests/**"
+            ]
+          # Takes a JSON array as text.
+          #
+          # Ignore skipping logic if the events is one of these:
+          do_not_skip: |
+            [
+              "schedule"
+            ]
+
   build:
+    # Only build if our checker give a green light.
+    needs: skippy
+    if: needs.skippy.outputs.should_skip != 'true'
+
     strategy:
       fail-fast: false
       matrix:
