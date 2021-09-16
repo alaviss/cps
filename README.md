@@ -7,7 +7,7 @@
 [![Matrix](https://img.shields.io/matrix/cps:matrix.org?style=flat&logo=matrix)](https://matrix.to/#/#cps:matrix.org)
 [![IRC](https://img.shields.io/badge/chat-%23cps%20on%20libera.chat-brightgreen?style=flat)](https://web.libera.chat/#cps)
 
-This project provides a `cps` pragma which you can add to a procedure to
+This project provides a `cps` pragma which you can add to a procedure t
 automatically rewrite it to use continuations for control-flow. This provides
 the benefits of CPS while abstracting away the verbosity of continuations.
 
