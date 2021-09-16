@@ -26,19 +26,18 @@ jobs:
         with:
           # Required to use path skipping.
           skip_after_successful_duplicate: 'true'
-          # Paths to ignore, uses micromatch:
+          # Skip if not in list, uses micromatch:
           # https://github.com/micromatch/micromatch
           #
           # This is a JSON array, provided as text, so no comments, sadly.
-          #
-          # FIXME: disabled ".github/workflows/ci.yml" to test the new logic.
-          paths_ignore: |
+          paths: |
             [
               "**.cfg",
               "**.nims",
               "**.nim",
               "**.nimble",
-              "tests/**"
+              "tests/**",
+              ".github/workflows/ci.yml"
             ]
           # Takes a JSON array as text.
           #
