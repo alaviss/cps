@@ -24,9 +24,8 @@ jobs:
         name: Skipping check
         uses: fkirc/skip-duplicate-actions@v3.4.1
         with:
-          # TODO: We might want to enable this, but keeping this off now to
-          # not change the current semantics
-          skip_after_successful_duplicate: 'false'
+          # Required to use path skipping.
+          skip_after_successful_duplicate: 'true'
           # Paths to ignore, uses micromatch:
           # https://github.com/micromatch/micromatch
           #
