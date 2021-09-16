@@ -12,7 +12,7 @@ automatically rewrite it to use continuations for control-flow. This provides
 the benefits of CPS while abstracting away the verbosity of continuations.
 
 The `cps` pragma performs only the control-flow rewrite; you implement or
-import a dispatcher to define both the type and behavior of your continuations,
+import a dispatcher to define both the type and behavior of your continuations
 so there is virtually no API and no limitations on composition.
 
 A substantial effort to demystify this style of programming, and what it may
