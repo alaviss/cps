@@ -9,7 +9,7 @@
 
 This project provides a `cps` pragma which you can add to a procedure to
 automatically rewrite it to use continuations for control-flow. This provides
-the benefits of CPS while abstracting away the verbosity of continuations.
+the benefits of CPS while abstracting away the verbosity of continuations
 
 The `cps` pragma performs only the control-flow rewrite; you implement or
 import a dispatcher to define both the type and behavior of your continuations,
